@@ -3,12 +3,49 @@
     "configurazione": "mano_a_conca",
     "luogo": "guancia",
     "movimento": "rotatorio",
+    "orientamento": "palmo_interno",
     "tipo_grammaticale": "nome"
+  },
+  "MARIA": {
+    "configurazione": "indice_esteso",
+    "luogo": "spazio_neutro",
+    "movimento": "puntamento_locus",
+    "orientamento": "fronte",
+    "tipo_grammaticale": "nome_proprio"
+  },
+  "LUCA": {
+    "configurazione": "indice_esteso",
+    "luogo": "spazio_neutro",
+    "movimento": "puntamento_locus",
+    "orientamento": "fronte",
+    "tipo_grammaticale": "nome_proprio"
+  },
+  "VEDERE": {
+    "configurazione": "V_handshape",
+    "luogo": "viso_occhi",
+    "movimento": "direzionale",
+    "orientamento": "target",
+    "tipo_grammaticale": "verbo_flessivo"
   },
   "DARE": {
     "configurazione": "mano_aperta",
     "luogo": "spazio_neutro",
     "movimento": "direzionale",
+    "orientamento": "target",
     "tipo_grammaticale": "verbo_flessivo"
+  },
+  "SALUTARE": {
+    "configurazione": "mano_aperta",
+    "luogo": "testa",
+    "movimento": "uscente",
+    "orientamento": "avanti",
+    "tipo_grammaticale": "verbo"
+  },
+  "DOMANI": {
+    "configurazione": "indice_esteso",
+    "luogo": "guancia",
+    "movimento": "avanti",
+    "orientamento": "laterale",
+    "tipo_grammaticale": "avverbio"
   }
 }

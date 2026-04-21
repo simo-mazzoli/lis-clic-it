@@ -1,1 +1,6 @@
-
+Maria vede Luca.
+Maria dà una mela a Luca.
+Luca saluta Maria.
+Maria vede Luca e poi lo saluta.
+Domani Maria dà la mela a Luca?
+Luca vede Maria?

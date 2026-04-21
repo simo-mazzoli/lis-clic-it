@@ -1,27 +1,112 @@
 # lis-clic-it
 
-Questo progetto mira a creare un dataset strutturato di frasi in **Lingua dei Segni Italiana (LIS)** utilizzando un approccio **RAG (Retrieval-Augmented Generation)** e il modello linguistico **Minerva 7B**. L'obiettivo è produrre un file JSONL pronto per il fine-tuning di modelli specializzati nella traduzione verso la LIS.
+Progetto per costruire un **dataset LIS (Lingua dei Segni Italiana)** in formato JSONL, generato con un flusso **RAG + LLM** e pensato per il **fine-tuning di Minerva 7B**.
 
-## 📌 Obiettivi del Progetto
-- Generare glosse LIS con annotazioni spaziali e morfosintattiche.
-- Focalizzarsi su subset linguistici complessi: coreferenza, verbi flessivi, interrogative polari.
-- Superare il limite della scarsità di dati (low-resource) tramite la generazione sintetica controllata.
+> Nota importante: questo repository non descrive la “lingua LIS completa”, ma un percorso **controllato e scalabile** su subset linguistici ad alta priorità.
 
----
+## Obiettivo
 
-## 📂 Organizzazione del Progetto (File Structure)
+Produrre un dataset sintetico ma linguisticamente controllato, con:
+- frase sorgente in italiano;
+- glossa/struttura LIS;
+- annotazioni formali del segno (manuali, spaziali, non-manuali, morfosintassi);
+- metadata di qualità e tracciabilità della generazione.
 
-Per un'implementazione rapida (1 mese), mantenere la seguente struttura di cartelle:
+## Perimetro linguistico (subset iniziale)
+
+Il progetto si concentra su fenomeni utili per il training iniziale:
+- **coreferenza** (referenti nello spazio di segnatura);
+- **verbi flessivi/direzionali** (accordo con loci);
+- **frasi affermative**;
+- **interrogative polari** (yes/no);
+- **variazioni di ordine e topicalizzazione** dove pertinente.
+
+## Struttura repository
 
 ```text
-LIS_Project/
+/workspace/lis-clic-it
 ├── data/
-│   ├── vocabolario.json          # Database dei segni con parametri manuali
-│   ├── regole_grammatica.md      # Linee guida sintattiche per il RAG
-│   └── input_frasi.txt           # Frasi in italiano da tradurre (una per riga)
+│   ├── vocabolario.json             # lessico LIS con parametri di realizzazione
+│   ├── schema_annotazione.json      # schema dei record dataset (contract dati)
+│   ├── regole_grammatica.md         # linee guida linguistiche operative
+│   ├── linee_guida_rag.md           # come usare retrieval + prompt Minerva 7B
+│   ├── piano_dataset.md             # strategia di campionamento e quality gates
+│   └── input_frasi.txt              # frasi seed in italiano
 ├── scripts/
-│   ├── retriever.py              # Logica per estrarre dati dal vocabolario
-│   └── generator.py              # Script principale per interrogare Minerva 7B
+│   ├── retriever.py                 # (placeholder) recupero lessico/regole
+│   └── generator.py                 # (placeholder) generazione JSONL con LLM
 ├── output/
-│   └── dataset_lis_final.jsonl   # Dataset generato pronto per il training
-└── README.md                     # Documentazione del progetto
+│   └── dataset_lis_final.jsonl      # output finale per training
+└── README.md
+```
+
+## Pipeline consigliata (end-to-end)
+
+1. **Curazione lessicale**
+   - Popolare `data/vocabolario.json` con segni validati.
+   - Ogni lemma deve includere forma base + varianti + vincoli d’uso.
+
+2. **Formalizzazione schema**
+   - Usare `data/schema_annotazione.json` come contratto obbligatorio.
+   - Validare ogni esempio generato contro lo schema.
+
+3. **RAG linguistico**
+   - Recuperare regole da `regole_grammatica.md` e lessico pertinente.
+   - Iniettare nel prompt solo il contesto necessario (riduce allucinazioni).
+
+4. **Generazione controllata (Minerva 7B fine-tuned)**
+   - Prompt con istruzioni rigide di output JSON.
+   - Decoding deterministico o a bassa temperatura.
+
+5. **Validazione automatica + revisione umana**
+   - Check schema JSON.
+   - Check coerenza loci/coreferenza.
+   - Revisione LIS expert su campioni stratificati.
+
+6. **Esportazione JSONL**
+   - Un record per riga, pronto per pipeline di fine-tuning.
+
+## Principi di qualità dati
+
+- **Tracciabilità**: ogni record deve avere `id`, `source`, `generation_meta`.
+- **Bilanciamento**: distribuzione uniforme per tipo frase/fenomeno.
+- **No leakage**: separazione train/dev/test per template e lessico.
+- **Versionamento**: incrementare `dataset_version` a ogni release.
+
+## Prossimi step implementativi
+
+- Implementare `scripts/retriever.py` per retrieval su lessico + regole.
+- Implementare `scripts/generator.py` per batch generation + validazione schema.
+- Aggiungere script di split train/dev/test con controlli anti-duplicato semantico.
+- Definire protocollo di valutazione con metriche automatiche + giudizio esperto.
+
+- Guida commentata dei documenti: `data/commenti_documenti.md`.
+
+## Avvertenza metodologica
+
+I dati sintetici non sostituiscono la validazione di persone sorde segnanti e linguisti LIS.
+La pipeline deve essere progettata come **human-in-the-loop**, non fully automatic.
+
+
+## Esecuzione rapida
+
+1. Inserisci le frasi italiane in `data/input_frasi.txt` (una per riga).
+2. Esegui il generatore:
+
+```bash
+python scripts/generator.py
+```
+
+3. Troverai il dataset in `output/dataset_lis_final.jsonl`.
+
+Opzioni utili:
+
+```bash
+python scripts/generator.py --input data/input_frasi.txt --output output/dataset_lis_final.jsonl --model-name minerva-7b-finetuned
+```
+
+Per verificare il retriever in standalone:
+
+```bash
+python scripts/retriever.py
+```
