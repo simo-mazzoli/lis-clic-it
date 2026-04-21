@@ -80,7 +80,39 @@ Il progetto si concentra su fenomeni utili per il training iniziale:
 - Aggiungere script di split train/dev/test con controlli anti-duplicato semantico.
 - Definire protocollo di valutazione con metriche automatiche + giudizio esperto.
 
+- Guida commentata dei documenti: `data/commenti_documenti.md`.
+
 ## Avvertenza metodologica
 
 I dati sintetici non sostituiscono la validazione di persone sorde segnanti e linguisti LIS.
 La pipeline deve essere progettata come **human-in-the-loop**, non fully automatic.
+
+
+## Esecuzione rapida
+
+1. Inserisci le frasi italiane in `data/input_frasi.txt` (una per riga).
+2. Esegui il generatore:
+
+```bash
+python scripts/generator.py
+```
+
+3. Troverai il dataset in `output/dataset_lis_final.jsonl`.
+
+Opzioni utili:
+
+```bash
+python scripts/generator.py --input data/input_frasi.txt --output output/dataset_lis_final.jsonl --model-name minerva-7b-finetuned
+```
+
+Per verificare il retriever in standalone:
+
+```bash
+python scripts/retriever.py
+```
+=======
+## Avvertenza metodologica
+
+I dati sintetici non sostituiscono la validazione di persone sorde segnanti e linguisti LIS.
+La pipeline deve essere progettata come **human-in-the-loop**, non fully automatic.
+
