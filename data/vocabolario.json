@@ -1,1 +1,14 @@
-
+{
+  "MELA": {
+    "configurazione": "mano_a_conca",
+    "luogo": "guancia",
+    "movimento": "rotatorio",
+    "tipo_grammaticale": "nome"
+  },
+  "DARE": {
+    "configurazione": "mano_aperta",
+    "luogo": "spazio_neutro",
+    "movimento": "direzionale",
+    "tipo_grammaticale": "verbo_flessivo"
+  }
+}
