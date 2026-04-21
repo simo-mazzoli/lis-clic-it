@@ -18,6 +18,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -35,6 +36,7 @@ class GenerationConfig:
 
     dataset_version: str
     model_name: str
+    hf_token: str | None
     rules_version: str
     lexicon_version: str
 
@@ -302,6 +304,7 @@ class LISGenerator:
             "notes": "auto-generated (deterministic baseline)",
             "generation_meta": {
                 "model": self.cfg.model_name,
+                "hf_token_configured": bool(self.cfg.hf_token),
                 "prompt_hash": prompt_hash,
                 "timestamp": self._now_iso(),
                 "retrieved_rules_version": self.cfg.rules_version,
@@ -348,7 +351,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--schema", default="data/schema_annotazione.json", help="Path to JSON schema")
     parser.add_argument("--output", default="output/dataset_lis_final.jsonl", help="Output JSONL path")
     parser.add_argument("--dataset-version", default="v0.1.0")
-    parser.add_argument("--model-name", default="minerva-7b-finetuned")
+    parser.add_argument("--model-name", default="sapienzanlp/Minerva-7B-instruct-v1.0")
+    parser.add_argument(
+        "--hf-token",
+        default=os.getenv("HUGGINGFACE_TOKEN"),
+        help="Hugging Face token (default: env HUGGINGFACE_TOKEN)",
+    )
     parser.add_argument("--rules-version", default="regole_grammatica@1")
     parser.add_argument("--lexicon-version", default="vocabolario@1")
     return parser.parse_args()
@@ -371,6 +379,7 @@ def main() -> None:
     cfg = GenerationConfig(
         dataset_version=args.dataset_version,
         model_name=args.model_name,
+        hf_token=args.hf_token,
         rules_version=args.rules_version,
         lexicon_version=args.lexicon_version,
     )

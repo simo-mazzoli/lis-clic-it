@@ -102,7 +102,8 @@ python scripts/generator.py
 Opzioni utili:
 
 ```bash
-python scripts/generator.py --input data/input_frasi.txt --output output/dataset_lis_final.jsonl --model-name minerva-7b-finetuned
+export HUGGINGFACE_TOKEN="hf_***"
+python scripts/generator.py --input data/input_frasi.txt --output output/dataset_lis_final.jsonl --model-name sapienzanlp/Minerva-7B-instruct-v1.0 --hf-token "$HUGGINGFACE_TOKEN"
 ```
 
 Per verificare il retriever in standalone:
@@ -110,9 +111,3 @@ Per verificare il retriever in standalone:
 ```bash
 python scripts/retriever.py
 ```
-=======
-## Avvertenza metodologica
-
-I dati sintetici non sostituiscono la validazione di persone sorde segnanti e linguisti LIS.
-La pipeline deve essere progettata come **human-in-the-loop**, non fully automatic.
-
