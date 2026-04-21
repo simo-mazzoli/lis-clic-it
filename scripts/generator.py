@@ -40,14 +40,12 @@ class GenerationConfig:
 
 
 class SimpleSchemaValidator:
-    """Validatore minimale allineato ai requisiti principali dello schema.
+    """Minimal validator aligned to our JSON schema required fields/types.
 
-    Nota:
-    - Non sostituisce un validatore JSON Schema completo.
-    - Serve come quality gate rapido in assenza di dipendenze esterne.
+    This does not implement full JSON Schema draft-07. It checks the most
+    relevant constraints needed by this project.
     """
 
-    # Campi top-level obbligatori e tipo Python atteso.
     REQUIRED_TOP_LEVEL = {
         "id": str,
         "dataset_version": str,

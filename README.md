@@ -110,3 +110,9 @@ Per verificare il retriever in standalone:
 ```bash
 python scripts/retriever.py
 ```
+=======
+## Avvertenza metodologica
+
+I dati sintetici non sostituiscono la validazione di persone sorde segnanti e linguisti LIS.
+La pipeline deve essere progettata come **human-in-the-loop**, non fully automatic.
+

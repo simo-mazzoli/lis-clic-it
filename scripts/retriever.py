@@ -9,6 +9,12 @@ Questo modulo è il "pezzo R" di una pipeline RAG:
 
 Scelta progettuale: nessuna dipendenza esterna, solo standard library,
 così il progetto resta eseguibile in ambienti minimali.
+This module provides:
+- lightweight lexical retrieval from `data/vocabolario.json`
+- rule section retrieval from `data/regole_grammatica.md`
+- prompt/context assembly for downstream generation
+
+No external dependencies are required.
 """
 
 from __future__ import annotations
@@ -32,6 +38,7 @@ class RetrievedContext:
         lexical_entries: sotto-dizionario del vocabolario utile per la frase.
         rule_sections: sezioni delle regole grammaticali selezionate.
     """
+    """Container with all context needed by the generator."""
 
     source_text: str
     sentence_type: str
@@ -54,6 +61,11 @@ class LISRetriever:
 
     # Mapping minimo token ITA -> lemma LIS (in maiuscolo, convenzione glosse).
     # Questo mapping è il ponte tra testo italiano e dizionario segni.
+    """Retrieve lexicon and relevant grammar rules for a sentence."""
+
+    _TOKEN_RE = re.compile(r"[A-Za-zÀ-ÖØ-öø-ÿ']+")
+
+    # Very small normalization map for input seeds.
     _TOKEN_TO_LEMMA = {
         "maria": "MARIA",
         "luca": "LUCA",
@@ -99,6 +111,7 @@ class LISRetriever:
             ci permette di recuperare solo il sottoinsieme di regole utili,
             invece di passare sempre tutto il documento al generatore.
         """
+        """Split markdown by h2 sections into a dictionary."""
         sections: dict[str, str] = {}
         current_title = "INTRO"
         buff: list[str] = []
@@ -127,6 +140,16 @@ class LISRetriever:
 
     def detect_lemmas(self, tokens: list[str]) -> list[str]:
         """Mappa i token ai lemmi LIS, rimuovendo duplicati e preservando ordine."""
+        sections[current_title] = "\n".join(buff).strip()
+        return {k: v for k, v in sections.items() if v}
+
+    def tokenize(self, text: str) -> list[str]:
+        return [m.group(0).lower() for m in self._TOKEN_RE.finditer(text)]
+
+    def detect_sentence_type(self, text: str) -> str:
+        return "polar_question" if text.strip().endswith("?") else "declarative"
+
+    def detect_lemmas(self, tokens: list[str]) -> list[str]:
         lemmas = []
         seen = set()
         for tok in tokens:
