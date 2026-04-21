@@ -1,0 +1,84 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "LIS Annotated Sentence Record",
+  "type": "object",
+  "required": [
+    "id",
+    "dataset_version",
+    "source_text_it",
+    "sentence_type",
+    "lis_gloss",
+    "signs",
+    "references",
+    "generation_meta"
+  ],
+  "properties": {
+    "id": { "type": "string" },
+    "dataset_version": { "type": "string" },
+    "source_text_it": { "type": "string" },
+    "sentence_type": {
+      "type": "string",
+      "enum": ["declarative", "polar_question"]
+    },
+    "lis_gloss": { "type": "string" },
+    "signs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["lemma", "form", "pos"],
+        "properties": {
+          "lemma": { "type": "string" },
+          "form": { "type": "string" },
+          "pos": { "type": "string" },
+          "location": { "type": "string" },
+          "handshape": { "type": "string" },
+          "movement": { "type": "string" },
+          "orientation": { "type": "string" },
+          "non_manuals": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "agreement": {
+            "type": "object",
+            "properties": {
+              "source_locus": { "type": "string" },
+              "target_locus": { "type": "string" }
+            },
+            "additionalProperties": false
+          },
+          "topic": { "type": "boolean" },
+          "oov": { "type": "boolean" },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+        },
+        "additionalProperties": false
+      }
+    },
+    "references": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["entity", "locus"],
+        "properties": {
+          "entity": { "type": "string" },
+          "locus": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "notes": { "type": "string" },
+    "generation_meta": {
+      "type": "object",
+      "required": ["model", "prompt_hash", "timestamp"],
+      "properties": {
+        "model": { "type": "string" },
+        "prompt_hash": { "type": "string" },
+        "timestamp": { "type": "string" },
+        "retrieved_rules_version": { "type": "string" },
+        "retrieved_lexicon_version": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
